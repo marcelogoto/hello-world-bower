@@ -1,0 +1,44 @@
+<html ng-app="projectLogin">
+    <head>
+        <title>Project Login</title>
+        <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
+        <style>
+            .jumbotron{
+                width: 400px;
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 20px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            .form-control{
+                margin-top: 10px;
+            }
+            .btn{
+                margin-top: 10px;
+            }
+        </style>
+        <script src="bower_components/angular/angular.js"></script>
+        <script>
+            angular.module("projectLogin",[]);
+            angular.module("projectLogin").controller("projectLoginCtrl", function ($scope){
+            
+               $scope.app = "projectLogin";
+                
+               $scope.login = function (){
+                   console.log("Login com sucesso!");
+               }
+               
+            });
+        </script>
+    </head>
+    <body ng-controller="projectLoginCtrl">
+           <div class="jumbotron">
+                <h3>Login</h3>
+                <input class="form-control" type="text" placeholder="Nome"/>
+                <input class="form-control" type="text" placeholder="Telefone"/>
+                <button class="btn btn-primary btn-block" ng-click="login()">Fazer login</button>
+           </div>
+    </body>
+</html>
