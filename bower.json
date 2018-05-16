@@ -1,21 +1,7 @@
 {
-  "name": "PROJETO_ANGULAR",
-  "authors": [
-    "Marcelo Goto"
-  ],
-  "description": "projeto angular p estudo",
-  "main": "hello_angular.html",
-  "keywords": [
-    "angular"
-  ],
-  "license": "None",
-  "homepage": "",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ]
+    "name": "PROJETO_ANGULAR",
+    "dependencies": {
+        "bootstrap": "3.x.x",
+        "angular": "1.x.x"
+    }
 }
