@@ -22,12 +22,21 @@
         <script src="bower_components/angular/angular.js"></script>
         <script>
             angular.module("projectLogin",[]);
-            angular.module("projectLogin").controller("projectLoginCtrl", function ($scope){
+            angular.module("projectLogin").controller("projectLoginCtrl", function ($scope, $window){
             
                $scope.app = "projectLogin";
                 
-               $scope.login = function (){
-                   console.log("Login com sucesso!");
+               $scope.usuarios = [
+                   {login: "admin", senha: "admin"}
+               ];
+                
+               $scope.login = function (usuario){
+                   if(usuario.login=="admin" && usuario.senha=="admin"){
+                       $window.alert("Login com sucesso! Redirecionando...");
+                   }
+                   else{
+                       $window.alert("Falha no login! Tente novamente.");
+                   }
                }
                
             });
@@ -36,9 +45,20 @@
     <body ng-controller="projectLoginCtrl">
            <div class="jumbotron">
                 <h3>Login</h3>
-                <input class="form-control" type="text" placeholder="Nome"/>
-                <input class="form-control" type="text" placeholder="Telefone"/>
-                <button class="btn btn-primary btn-block" ng-click="login()">Fazer login</button>
+                <form name="loginForm">
+                    <input class="form-control" type="text" ng-model="usuario.login" name="login" placeholder="Usuario" ng-required="true"/>
+                    <input class="form-control" type="text" ng-model="usuario.senha" name="senha" placeholder="Senha" ng-required="true"/>
+                </form>
+                
+                <div ng-show="loginForm.login.$error.required && loginForm.login.$dirty" class="alert alert-danger">
+                    Por favor, preencha o campo usuario!
+                </div>
+                
+                <div ng-show="loginForm.senha.$error.required && loginForm.senha.$dirty" class="alert alert-danger">
+                    Por favor, preencha o campo senha!
+                </div>
+                
+                <button class="btn btn-primary btn-block" ng-click="login(usuario)" ng-disabled="loginForm.$invalid">Fazer login</button>
            </div>
     </body>
 </html>
