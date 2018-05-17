@@ -41,9 +41,12 @@
                 .controller("projectLoginCtrl", function ($scope, $window){
 
                    $scope.app = "projectLogin";
+                
+                   $scope.isDisabled = false;
 
                    $scope.usuarios = [
-                       {login: "admin", senha: "admin"}
+                       {login: "admin", senha: "admin"},
+                       {login: "marcelo", senha: "goto"}
                    ];
 
                    $scope.login = function (usuario){
@@ -54,6 +57,21 @@
                        else{
                            $window.alert("Falha no login! Tente novamente.");
                        }
+                   }
+                   
+                   $scope.showRegisterFormAndDisableRegisterBtn = function (){
+                       $scope.isDisabled = true;
+                   }
+                   
+                   $scope.adicionarUsuario = function (usuario){
+                       $scope.usuarios.push(angular.copy(usuario));
+                       delete $scope.usuario;
+                       $scope.isDisabled = false;
+                   }   
+                   
+                   $scope.deslogar = function (){
+                       $window.alert("Usuário deslogado com sucesso! Redirecionando...");
+                       $window.history.back();
                    }
                
             });
