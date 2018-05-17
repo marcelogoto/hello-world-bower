@@ -1,0 +1,67 @@
+<html ng-app="projectLogin">
+    <meta charset="UTF-8">
+    <head>
+        <title>Project Login</title>
+        <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
+        <style>
+            .jumbotron{
+                width: 400px;
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 20px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            .form-control{
+                margin-top: 10px;
+            }
+            .btn{
+                margin-top: 10px;
+            }
+        </style>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+        <script>
+            angular.module("projectLogin",['ui.router'])
+                .config(function($stateProvider, $urlRouterProvider){
+                
+                    $urlRouterProvider.otherwise('/');
+                    
+                    $stateProvider.state('login', {
+                        url: '/',
+                        templateUrl: 'project-login.html'
+                    });
+                
+                    $stateProvider.state('dashboard', {
+                        url: '/dashboard',
+                        templateUrl: 'project-dashboard.html'
+                    });
+                })
+                .controller("projectLoginCtrl", function ($scope, $window){
+
+                   $scope.app = "projectLogin";
+
+                   $scope.usuarios = [
+                       {login: "admin", senha: "admin"}
+                   ];
+
+                   $scope.login = function (usuario){
+                       if(usuario.login=="admin" && usuario.senha=="admin"){
+                           $window.alert("Login com sucesso! Redirecionando...");
+                           $state.go('dashboard');
+                       }
+                       else{
+                           $window.alert("Falha no login! Tente novamente.");
+                       }
+                   }
+               
+            });
+        </script>
+    </head>
+    <body ng-controller="projectLoginCtrl">
+        <div ui-view>
+            
+        </div>
+    </body>
+</html>
