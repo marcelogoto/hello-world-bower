@@ -38,25 +38,47 @@
                         templateUrl: 'project-dashboard.html'
                     });
                 })
-                .controller("projectLoginCtrl", function ($scope, $window){
+                .controller("projectLoginCtrl", function ($scope, $window, $rootScope, $state){
 
                    $scope.app = "projectLogin";
                 
                    $scope.isDisabled = false;
-
-                   $scope.usuarios = [
-                       {login: "admin", senha: "admin"},
-                       {login: "marcelo", senha: "goto"}
-                   ];
+                
+                   var dbLocal = {
+                       db: null,
+                       localdb: function (){
+                           this.db = window.openDatabase("dbLocal", "1.0", "Banco Local",2000);
+                           this.db.transaction(function(res){
+                               res.executeSql("CREATE TABLE IF NOT EXISTS USER(login TEXT, senha TEXT);", []);
+                           });
+                       }
+                   }
+                   
+                   dbLocal.localdb();
+                
+                   //INSERINDO LOCALMENTE
+//                   var login = "marcelo";
+//                   var senha = "goto";
+                
+//                   dbLocal.db.transaction(function(res){
+//                       res.executeSql("INSERT INTO USER (login, senha) VALUES(?,?)", [login,senha]);
+//                   });
 
                    $scope.login = function (usuario){
-                       if(usuario.login=="admin" && usuario.senha=="admin"){
-                           $window.alert("Login com sucesso! Redirecionando...");
-                           $state.go('dashboard');
-                       }
-                       else{
-                           $window.alert("Falha no login! Tente novamente.");
-                       }
+                       
+                       dbLocal.db.transaction(function(res){
+                            res.executeSql("SELECT login, senha FROM USER WHERE login = '"+usuario.login+"' AND senha = '"+usuario.senha+"' ",[], function(res,data){
+                                
+                                var tam = data.rows.length;
+                                if (tam > 0){
+                                    $window.alert("Login com sucesso! Redirecionando...");
+                                    $state.go('dashboard');
+                                }
+                                else{
+                                    $window.alert("Falha no login! Tente novamente.");
+                                }
+                            });                      
+                       });
                    }
                    
                    $scope.showRegisterFormAndDisableRegisterBtn = function (){
@@ -64,7 +86,7 @@
                    }
                    
                    $scope.adicionarUsuario = function (usuario){
-                       $scope.usuarios.push(angular.copy(usuario));
+                       $rootScope.usuarios.push(angular.copy(usuario));
                        delete $scope.usuario;
                        $scope.isDisabled = false;
                    }   

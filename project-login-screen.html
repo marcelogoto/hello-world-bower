@@ -47,7 +47,7 @@
                 <h3>Login</h3>
                 <form name="loginForm">
                     <input class="form-control" type="text" ng-model="usuario.login" name="login" placeholder="Usuario" ng-required="true"/>
-                    <input class="form-control" type="text" ng-model="usuario.senha" name="senha" placeholder="Senha" ng-required="true"/>
+                    <input class="form-control" type="password" ng-model="usuario.senha" name="senha" placeholder="Senha" ng-required="true"/>
                 </form>
                 
                 <div ng-show="loginForm.login.$error.required && loginForm.login.$dirty" class="alert alert-danger">
