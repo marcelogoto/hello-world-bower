@@ -38,22 +38,95 @@
                         templateUrl: 'project-dashboard.html'
                     });
                 })
-                .controller("projectLoginCtrl", function ($scope, $window){
+                .controller("projectLoginCtrl", function ($scope, $window, $rootScope, $state, $timeout){
 
                    $scope.app = "projectLogin";
-
-                   $scope.usuarios = [
-                       {login: "admin", senha: "admin"}
-                   ];
+                
+                   $scope.isDisabled = false;
+                
+                   $scope.nomeUsuarioLogado = "<<usuario>>";
+                
+                   $scope.registeredUsersArray = [];
+                
+                   var dbLocal = {
+                       db: null,
+                       localdb: function (){
+                           this.db = window.openDatabase("dbLocal", "1.0", "Banco Local",2000);
+                           this.db.transaction(function(res){
+                               res.executeSql("CREATE TABLE IF NOT EXISTS USER(login TEXT, senha TEXT);", []);
+                           });
+                       }
+                   }
+                   
+                   dbLocal.localdb();
 
                    $scope.login = function (usuario){
-                       if(usuario.login=="admin" && usuario.senha=="admin"){
-                           $window.alert("Login com sucesso! Redirecionando...");
-                           $state.go('dashboard');
-                       }
-                       else{
-                           $window.alert("Falha no login! Tente novamente.");
-                       }
+                       
+                       dbLocal.db.transaction(function(res){
+                            res.executeSql("SELECT login FROM USER",[],function(res,data){
+                                
+                                var tam = data.rows.length;
+                                
+                                $scope.registeredUsersArray = [];
+                                
+                                for(i = 0; i<tam; i++){
+                                    $scope.registeredUsersArray.push(data.rows.item(i).login);
+                                }
+                            });   
+                       });
+                       
+                       dbLocal.db.transaction(function(res){
+                            res.executeSql("SELECT login, senha FROM USER WHERE login = '"+usuario.login+"' AND senha = '"+usuario.senha+"' ",[], function(res,data){
+                                
+                                var tam = data.rows.length;
+                                
+                                if (tam > 0){
+                                    $window.alert("Login com sucesso! Redirecionando...");
+                                    $state.go('dashboard');
+                                    $scope.nomeUsuarioLogado = usuario.login;
+                                }
+                                else{
+                                    $window.alert("Falha no login! Tente novamente.");
+                                }
+                            });                      
+                       });
+                   }
+                   
+                   $scope.showRegisterFormAndDisableRegisterBtn = function (){
+                       $scope.isDisabled = true;
+                   }
+                   
+                   $scope.adicionarUsuario = function (usuario){
+                       dbLocal.db.transaction(function(res){
+                           res.executeSql("INSERT INTO USER (login, senha) VALUES(?,?)", [usuario.login,usuario.senha]);
+                           
+                           dbLocal.db.transaction(function(res){
+                                res.executeSql("SELECT login FROM USER",[],function(res,data){
+                                
+                                    var tam = data.rows.length;
+
+                                    $scope.registeredUsersArray = [];
+
+                                    
+                                    
+//                                    $timeout(function(){
+                                        $scope.$apply(function(){
+                                            for(i = 0; i<tam; i++){
+                                                $scope.registeredUsersArray.push(data.rows.item(i).login);
+                                            }        
+                                        });
+//                                    },0);
+                                    
+                                });   
+                           });
+                       });
+                       
+                       $scope.isDisabled = false;
+                   }   
+                   
+                   $scope.deslogar = function (){
+                       $window.alert("Usuário deslogado com sucesso! Redirecionando...");
+                       $window.history.back();
                    }
                
             });
