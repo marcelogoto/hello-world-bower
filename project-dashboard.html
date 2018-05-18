@@ -1,0 +1,26 @@
+<div class="jumbotron">
+    <h3>Bem vindo, {{nomeUsuarioLogado}}</h3>
+    <button class="btn btn-secondary" ng-click="deslogar()">Deslogar</button>
+    <br>
+    <br>
+    <h4>Lista de usuários cadastrados: </h4>
+    <br>
+    <table class="table">
+        <tr>
+            <th>Nome</th>
+        </tr>
+        <tr ng-repeat="usuario in registeredUsersArray">
+            <td>{{usuario}}</td>
+        </tr>
+    </table>
+    <button class="btn btn-primary btn-block" ng-click="showRegisterFormAndDisableRegisterBtn()" ng-disabled="isDisabled">Adicionar usuário</button>  
+    
+    <div ng-show="isDisabled">
+        <hr/>
+        <form name="registerForm">
+            <input class="form-control" type="text" ng-model="usuario.login" name="login" placeholder="Usuario" ng-required="true"/>
+            <input class="form-control" type="password" ng-model="usuario.senha" name="senha" placeholder="Senha" ng-required="true"/>
+        </form>   
+        <button class="btn btn-primary btn-block" ng-click="adicionarUsuario(usuario)">Cadastrar usuário</button>  
+    </div> 
+</div>

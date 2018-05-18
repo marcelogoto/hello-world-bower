@@ -1,0 +1,18 @@
+<div class=jumbotron>
+    <h3>Login</h3>
+    <form name="loginForm">
+        <input class="form-control" type="text" ng-model="usuario.login" name="login" placeholder="Usuario" ng-required="true"/>
+        <input class="form-control" type="password" ng-model="usuario.senha" name="senha" placeholder="Senha" ng-required="true"/>
+    </form>
+                
+    <div ng-show="loginForm.login.$error.required && loginForm.login.$dirty" class="alert alert-danger">
+        Por favor, preencha o campo usuario!
+    </div>
+                
+    <div ng-show="loginForm.senha.$error.required && loginForm.senha.$dirty" class="alert alert-danger">
+        Por favor, preencha o campo senha!
+    </div>
+                
+    <button class="btn btn-primary btn-block" ng-click="login(usuario)" ng-disabled="loginForm.$invalid">Fazer login</button>     
+    
+</div>
