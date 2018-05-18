@@ -9,8 +9,8 @@
         <tr>
             <th>Nome</th>
         </tr>
-        <tr ng-repeat="usuario in usuarios">
-            <td>{{usuario.login}}</td>
+        <tr ng-repeat="usuario in registeredUsersArray">
+            <td>{{usuario}}</td>
         </tr>
     </table>
     <button class="btn btn-primary btn-block" ng-click="showRegisterFormAndDisableRegisterBtn()" ng-disabled="isDisabled">Adicionar usuário</button>  

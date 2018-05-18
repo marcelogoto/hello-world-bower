@@ -46,6 +46,8 @@
                 
                    $scope.nomeUsuarioLogado = "<<usuario>>";
                 
+                   $scope.registeredUsersArray = [];
+                
                    var dbLocal = {
                        db: null,
                        localdb: function (){
@@ -80,9 +82,22 @@
                    $scope.login = function (usuario){
                        
                        dbLocal.db.transaction(function(res){
+                            res.executeSql("SELECT login FROM USER",[],function(res,data){
+                                
+                                var tam = data.rows.length;
+                                
+                                for(i = 0; i<tam; i++){
+                                    $scope.registeredUsersArray.push(data.rows.item(i).login);
+                                }
+                                console.log($scope.registeredUsersArray)
+                            });   
+                       });
+                       
+                       dbLocal.db.transaction(function(res){
                             res.executeSql("SELECT login, senha FROM USER WHERE login = '"+usuario.login+"' AND senha = '"+usuario.senha+"' ",[], function(res,data){
                                 
                                 var tam = data.rows.length;
+                                
                                 if (tam > 0){
                                     $window.alert("Login com sucesso! Redirecionando...");
                                     
