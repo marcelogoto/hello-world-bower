@@ -38,7 +38,7 @@
                         templateUrl: 'project-dashboard.html'
                     });
                 })
-                .controller("projectLoginCtrl", function ($scope, $window, $rootScope, $state){
+                .controller("projectLoginCtrl", function ($scope, $window, $rootScope, $state, $timeout){
 
                    $scope.app = "projectLogin";
                 
@@ -58,26 +58,7 @@
                        }
                    }
                    
-                   var dbLocalUserLogado = {
-                       db: null,
-                       localdb: function(){
-                           this.db = window.openDatabase("dbLocalUserLogado", "1.0", "Banco Local User Logado", 1000);
-                           this.db.transaction(function(res){
-                                res.executeSql("CREATE TABLE IF NOT EXISTS USERLOGADO(login TEXT);",[]);
-                           });
-                       }
-                   }
-                   
                    dbLocal.localdb();
-                   dbLocalUserLogado.localdb();
-                
-                   //INSERINDO LOCALMENTE
-//                   var login = "marcelo";
-//                   var senha = "goto";
-                
-//                   dbLocal.db.transaction(function(res){
-//                       res.executeSql("INSERT INTO USER (login, senha) VALUES(?,?)", [login,senha]);
-//                   });
 
                    $scope.login = function (usuario){
                        
@@ -86,10 +67,11 @@
                                 
                                 var tam = data.rows.length;
                                 
+                                $scope.registeredUsersArray = [];
+                                
                                 for(i = 0; i<tam; i++){
                                     $scope.registeredUsersArray.push(data.rows.item(i).login);
                                 }
-                                console.log($scope.registeredUsersArray)
                             });   
                        });
                        
@@ -100,12 +82,8 @@
                                 
                                 if (tam > 0){
                                     $window.alert("Login com sucesso! Redirecionando...");
-                                    
-                                    dbLocalUserLogado.db.transaction(function(res){
-                                        res.executeSql("INSERT INTO USERLOGADO (login) VALUES(?)", [usuario.login]);
-                                        $state.go('dashboard');
-                                        $scope.nomeUsuarioLogado = usuario.login;
-                                    });
+                                    $state.go('dashboard');
+                                    $scope.nomeUsuarioLogado = usuario.login;
                                 }
                                 else{
                                     $window.alert("Falha no login! Tente novamente.");
@@ -119,8 +97,30 @@
                    }
                    
                    $scope.adicionarUsuario = function (usuario){
-                       $rootScope.usuarios.push(angular.copy(usuario));
-                       delete $scope.usuario;
+                       dbLocal.db.transaction(function(res){
+                           res.executeSql("INSERT INTO USER (login, senha) VALUES(?,?)", [usuario.login,usuario.senha]);
+                           
+                           dbLocal.db.transaction(function(res){
+                                res.executeSql("SELECT login FROM USER",[],function(res,data){
+                                
+                                    var tam = data.rows.length;
+
+                                    $scope.registeredUsersArray = [];
+
+                                    
+                                    
+//                                    $timeout(function(){
+                                        $scope.$apply(function(){
+                                            for(i = 0; i<tam; i++){
+                                                $scope.registeredUsersArray.push(data.rows.item(i).login);
+                                            }        
+                                        });
+//                                    },0);
+                                    
+                                });   
+                           });
+                       });
+                       
                        $scope.isDisabled = false;
                    }   
                    
